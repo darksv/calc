@@ -17,9 +17,11 @@ namespace Calculator.Parselets
         /// <returns></returns>
         public IExpression Parse(Parser parser, IExpression leftExpression, Token token)
         {
-            var callee = leftExpression;
-            var args = new List<IExpression>();
+            var callee = leftExpression as IdentifierExpression;
+            if (callee == null)
+                throw new ParseException("Only named function can be called");
 
+            var args = new List<IExpression>();
             bool expectArgument = false;
             while (true)
             {
@@ -31,13 +33,14 @@ namespace Calculator.Parselets
                         break;
                 }
 
-                var expr = parser.Parse(0);
-                args.Add(expr);
+                var arg = parser.Parse(0);
+                args.Add(arg);
 
+                // Expect that next token will be an argument only if there is a comma
                 expectArgument = parser.Match(TokenKind.Comma);
             }
             
-            return new FunctionCallExpression(callee, args);
+            return new FunctionCallExpression(callee.Name, args);
         }
 
         /// <summary>

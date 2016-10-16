@@ -10,18 +10,18 @@ namespace Calculator.Expressions
         /// <summary>
         ///     Initializes function call expression.
         /// </summary>
-        /// <param name="callee">function to call</param>
+        /// <param name="name">function to call</param>
         /// <param name="args">arguments for the function</param>
-        public FunctionCallExpression(IExpression callee, List<IExpression> args)
+        public FunctionCallExpression(string name, List<IExpression> args)
         {
-            Callee = callee;
+            Name = name;
             Arguments = args;
         }
 
         /// <summary>
-        ///     Function to call.
+        ///     Name of the function to call.
         /// </summary>
-        public IExpression Callee { get; }
+        public string Name { get; }
 
         /// <summary>
         ///     Arguments passed to the function.
@@ -43,7 +43,7 @@ namespace Calculator.Expressions
         /// <returns>string representation of the expression</returns>
         public override string ToString()
         {
-            return $"{Callee}({Arguments})";
+            return $"{Name}({Arguments})";
         }
     }
 }
