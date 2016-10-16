@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace Calculator
@@ -8,6 +9,7 @@ namespace Calculator
     /// </summary>
     public enum TokenKind
     {
+        EndOfSource,
         Number,
         Identifier,
         Comma,
@@ -17,7 +19,6 @@ namespace Calculator
         Slash,
         LeftParen,
         RightParen,
-        End
     }
     
     /// <summary>
@@ -77,11 +78,14 @@ namespace Calculator
         public override bool Equals(object obj)
         {
             var other = obj as Token;
-
-            return (other != null)
-                   && Kind.Equals(other.Kind)
-                   && NumberValue.Equals(other.NumberValue)
-                   && TextValue.Equals(other.TextValue);
+            if (other == null || other.Kind != Kind)
+                return false;
+            else if (Kind == TokenKind.Number)
+                return other.NumberValue.Equals(NumberValue);
+            else if (Kind == TokenKind.Identifier)
+                return other.TextValue.Equals(TextValue);
+            else
+                return true;
         }
 
         /// <summary>

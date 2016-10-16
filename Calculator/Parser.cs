@@ -95,14 +95,10 @@ namespace Calculator
                 token = Consume();
 
                 var parselet = GetInfixParseletIfExists(token.Kind);
-                if (parselet != null)
-                {
-                    left = parselet.Parse(this, left, token);
-                }
-                else
-                {
+                if (parselet == null)
                     throw new ParseException("watwat");
-                }
+
+                left = parselet.Parse(this, left, token);
             }
 
             return left;
@@ -115,13 +111,10 @@ namespace Calculator
         public IExpression Parse()
         {
             var expr = Parse(0);
-
-//            if (LookAhead(0).Kind != TokenKind.End)
-//                throw new ParseException($"Unexpected token {LookAhead(0).Kind}");
-
+            Consume(TokenKind.EndOfSource);
             return expr;
         }
-
+        
         /// <summary>
         ///     Consumes token with given kind.
         /// </summary>
@@ -130,10 +123,13 @@ namespace Calculator
         public Token Consume(TokenKind expected)
         {
             var token = LookAhead(0);
-            if (token.Kind != expected)
+            if (token.Kind == expected)
+                return Consume();
+            
+            if (expected == TokenKind.EndOfSource)
                 throw new ParseException($"Unexpected token {token}");
-
-            return Consume();
+            else
+                throw new ParseException($"Expected {expected}, got {token}");
         }
 
         /// <summary>
@@ -143,10 +139,9 @@ namespace Calculator
         public Token Consume()
         {
             var token = LookAhead(0);
-            if (token.Kind == TokenKind.End)
-                throw new ParseException("Unexpected end of tokens");
+            if (token != null)
+                _queuedTokens.RemoveAt(0);
             
-            _queuedTokens.RemoveAt(0);
             return token;
         }
 
@@ -169,19 +164,19 @@ namespace Calculator
         ///     Preloads tokens to queue.
         /// </summary>
         /// <param name="distance">index of token on queue to return</param>
-        /// <returns>token</returns>
+        /// <returns>token or null if there are no more tokens</returns>
         public Token LookAhead(int distance)
         {
             // Load new tokens into a queue until we can get the one specified by distance
             while (distance >= _queuedTokens.Count)
             {
-                if (_enumerator.MoveNext())
-                    _queuedTokens.Add(_enumerator.Current);
-                else
-                    return new Token(TokenKind.End);
+                if (!_enumerator.MoveNext())
+                    break;
+
+                _queuedTokens.Add(_enumerator.Current);
             }
 
-            return _queuedTokens[distance];
+            return (distance < _queuedTokens.Count) ? _queuedTokens[distance] : null;
         }
 
         /// <summary>

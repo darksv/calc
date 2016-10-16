@@ -13,7 +13,7 @@
         /// <returns>parsed expression</returns>
         public IExpression Parse(Parser parser, Token token)
         {
-            var expr = parser.Parse();
+            var expr = parser.Parse(0);
             parser.Consume(TokenKind.RightParen);
             return expr;
         }

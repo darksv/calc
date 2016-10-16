@@ -41,6 +41,8 @@ namespace Calculator
         {
             while (HasNext())
                 yield return GetNext();
+            // Stream of tokens must be terminated with EndOfStream token 
+            yield return new Token(TokenKind.EndOfSource);
         }
 
         /// <summary>
@@ -168,7 +170,7 @@ namespace Calculator
             SkipSpace();
 
             if (!HasNext())
-                return new Token(TokenKind.End);
+                return new Token(TokenKind.EndOfSource);
             else if (char.IsDigit(Current))
                 return new Token(ConsumeNumber());
             else if (char.IsLetter(Current))

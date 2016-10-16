@@ -31,7 +31,7 @@ namespace Calculator.Parselets
                         break;
                 }
 
-                var expr = parser.Parse();
+                var expr = parser.Parse(0);
                 args.Add(expr);
 
                 expectArgument = parser.Match(TokenKind.Comma);
