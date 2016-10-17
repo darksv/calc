@@ -152,11 +152,26 @@ namespace Calculator
         /// <returns>true if tokens match, otherwise, false</returns>
         public bool Match(TokenKind expected)
         {
+            Token t;
+            return Match(expected, out t);
+        }
+
+        /// <summary>
+        ///     Checks whether current token has specified kind. If it matches, consumes it and returns consumed token as output argument.
+        /// </summary>
+        /// <param name="expected"></param>
+        /// <param name="consumedToken"></param>
+        /// <returns>true if tokens match, otherwise, false</returns>
+        public bool Match(TokenKind expected, out Token consumedToken)
+        {
             var token = LookAhead(0);
             if (token.Kind != expected)
+            {
+                consumedToken = null;
                 return false;
+            }
 
-            Consume();
+            consumedToken = Consume();
             return true;
         }
 

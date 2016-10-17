@@ -19,7 +19,12 @@ namespace Calculator.Parselets
         {
             var callee = leftExpression as IdentifierExpression;
             if (callee == null)
-                throw new ParseException("Only named function can be called");
+            {
+                // Left expression is not an identifier so this is not a function call, but implicit multiplication like 2(x+3) or (x+1)(x+3)
+                var rightExpression = parser.Parse(0);
+                parser.Consume(TokenKind.RightParen);
+                return new BinaryExpression(TokenKind.Asterisk, leftExpression, rightExpression);
+            }
 
             var args = new List<IExpression>();
             bool expectArgument = false;

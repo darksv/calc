@@ -24,6 +24,7 @@ namespace Calculator
             Register(TokenKind.Asterisk, new BinaryOperatorParselet(Precedence.Multiplication, Association.Left));
             Register(TokenKind.Slash, new BinaryOperatorParselet(Precedence.Division, Association.Left));
             Register(TokenKind.LeftParen, new FunctionCallParselet());
+            Register(TokenKind.Identifier, new ImplicitMultiplicationParselet());
         }
     }
 }

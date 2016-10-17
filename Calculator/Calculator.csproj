@@ -61,6 +61,7 @@
     <Compile Include="Parselets\FunctionCallParselet.cs" />
     <Compile Include="Parselets\GroupParselet.cs" />
     <Compile Include="Parselets\IdentifierParselet.cs" />
+    <Compile Include="Parselets\ImplicitMultiplicationParselet.cs" />
     <Compile Include="Parselets\NumberParselet.cs" />
     <Compile Include="Parselets\PrefixOperatorParselet.cs" />
     <Compile Include="IExpression.cs" />
