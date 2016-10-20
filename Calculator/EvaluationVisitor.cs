@@ -13,6 +13,28 @@ namespace Calculator
         private readonly Stack<double> _numbers = new Stack<double>();
 
         /// <summary>
+        ///     Functions that handle prefix unary operations.
+        /// </summary>
+        private static readonly Dictionary<TokenKind, Func<double, double>> PrefixOperators =
+            new Dictionary<TokenKind, Func<double, double>>()
+            {
+                {TokenKind.Plus, (o) => +o},
+                {TokenKind.Minus, (o) => -o},
+            };
+
+        /// <summary>
+        ///     Functions that handle infix binary operations.
+        /// </summary>
+        private static readonly Dictionary<TokenKind, Func<double, double, double>> BinaryOperators = 
+            new Dictionary<TokenKind, Func<double, double, double>>()
+            {
+                {TokenKind.Plus, (l, r) => l + r},
+                {TokenKind.Minus, (l, r) => l - r},
+                {TokenKind.Asterisk, (l, r) => l * r},
+                {TokenKind.Slash, (l, r) => l / r},
+            };
+
+        /// <summary>
         ///     Pushes value of the expression onto the stack.
         /// </summary>
         /// <param name="expression">expression to calculate</param>
@@ -39,25 +61,20 @@ namespace Calculator
             expression.Left.Accept(this);
             expression.Right.Accept(this);
 
-            var b = _numbers.Pop();
-            var a = _numbers.Pop();
-
-            switch (expression.Operator)
+            Func<double, double, double> func;
+            if (BinaryOperators.TryGetValue(expression.Operator, out func))
             {
-                case TokenKind.Plus:
-                    _numbers.Push(a + b);
-                    break;
-                case TokenKind.Minus:
-                    _numbers.Push(a - b);
-                    break;
-                case TokenKind.Asterisk:
-                    _numbers.Push(a * b);
-                    break;
-                case TokenKind.Slash:
-                    _numbers.Push(a / b);
-                    break;
-                default:
-                    throw new Exception($"Invalid operator {expression.Operator}");
+                // Arguments should be popped in reversed order
+                var b = _numbers.Pop();
+                var a = _numbers.Pop();
+
+                var result = func(a, b);
+
+                _numbers.Push(result);
+            }
+            else
+            {
+                throw new Exception($"Unsupported binary operator {expression.Operator}");
             }
         }
 
@@ -69,16 +86,18 @@ namespace Calculator
         {
             expression.Operand.Accept(this);
 
-            switch (expression.Operator)
+            Func<double, double> func;
+            if (PrefixOperators.TryGetValue(expression.Operator, out func))
             {
-                case TokenKind.Plus:
-                    // Plus had no effect on a number
-                    break;
-                case TokenKind.Minus:
-                    _numbers.Push(-_numbers.Pop());
-                    break;
-                default:
-                    throw new ParseException($"Unsupported operator {expression.Operator}");
+                var arg = _numbers.Pop();
+
+                var result = func(arg);
+
+                _numbers.Push(result);
+            }
+            else
+            {
+                throw new Exception($"Unsupported prefix unary operator {expression.Operator}");
             }
         }
 
