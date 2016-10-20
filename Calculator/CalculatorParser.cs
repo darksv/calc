@@ -23,6 +23,7 @@ namespace Calculator
             Register(TokenKind.Minus, new BinaryOperatorParselet(Precedence.Substraction, Association.Left));
             Register(TokenKind.Asterisk, new BinaryOperatorParselet(Precedence.Multiplication, Association.Left));
             Register(TokenKind.Slash, new BinaryOperatorParselet(Precedence.Division, Association.Left));
+            Register(TokenKind.Caret, new BinaryOperatorParselet(Precedence.Exponentiation, Association.Right));
             Register(TokenKind.LeftParen, new FunctionCallParselet());
             Register(TokenKind.Identifier, new ImplicitMultiplicationParselet());
         }

@@ -143,6 +143,8 @@ namespace Calculator
                     return Select(TokenKind.Asterisk);
                 case '/':
                     return Select(TokenKind.Slash);
+                case '^':
+                    return Select(TokenKind.Caret);
                 case '(':
                     return Select(TokenKind.LeftParen);
                 case ')':

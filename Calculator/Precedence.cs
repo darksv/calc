@@ -12,6 +12,7 @@ namespace Calculator
         public const int Substraction = 1;
         public const int Multiplication = 2;
         public const int Division = 2;
+        public const int Exponentiation = 3;
         public const int Unary = 10;
     }
 }

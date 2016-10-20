@@ -32,6 +32,7 @@ namespace Calculator
                 {TokenKind.Minus, (l, r) => l - r},
                 {TokenKind.Asterisk, (l, r) => l * r},
                 {TokenKind.Slash, (l, r) => l / r},
+                {TokenKind.Caret, Math.Pow}
             };
 
         /// <summary>

@@ -17,6 +17,7 @@ namespace Calculator
         Minus,
         Asterisk,
         Slash,
+        Caret,
         LeftParen,
         RightParen,
     }
