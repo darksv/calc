@@ -122,7 +122,7 @@ namespace Calculator
         /// <returns>consumed token</returns>
         public Token Consume(TokenKind expected)
         {
-            var token = LookAhead(0);
+            var token = Peek(0);
             if (token.Kind == expected)
                 return Consume();
             
@@ -138,7 +138,7 @@ namespace Calculator
         /// <returns>popped token</returns>
         public Token Consume()
         {
-            var token = LookAhead(0);
+            var token = Peek(0);
             if (token != null)
                 _queuedTokens.RemoveAt(0);
             
@@ -164,7 +164,7 @@ namespace Calculator
         /// <returns>true if tokens match, otherwise, false</returns>
         public bool Match(TokenKind expected, out Token consumedToken)
         {
-            var token = LookAhead(0);
+            var token = Peek(0);
             if (token.Kind != expected)
             {
                 consumedToken = null;
@@ -176,22 +176,22 @@ namespace Calculator
         }
 
         /// <summary>
-        ///     Preloads tokens to queue.
+        ///     Returns token that is on the queue at given position without removing it.
         /// </summary>
-        /// <param name="distance">index of token on queue to return</param>
+        /// <param name="index">index of a token on the queue</param>
         /// <returns>token or null if there are no more tokens</returns>
-        public Token LookAhead(int distance)
+        public Token Peek(int index)
         {
-            // Load new tokens into a queue until we can get the one specified by distance
-            while (distance >= _queuedTokens.Count)
+            // Load new tokens into a queue until we can get the one specified by index
+            while (index >= _queuedTokens.Count)
             {
                 if (!_enumerator.MoveNext())
-                    break;
-
+                    return null;
+                
                 _queuedTokens.Add(_enumerator.Current);
             }
 
-            return (distance < _queuedTokens.Count) ? _queuedTokens[distance] : null;
+            return _queuedTokens[index];
         }
 
         /// <summary>
@@ -200,7 +200,7 @@ namespace Calculator
         /// <returns>precedence of an operator</returns>
         private int GetPrecedence()
         {
-            var token = LookAhead(0);
+            var token = Peek(0);
             return GetInfixParseletIfExists(token.Kind)?.Precedence ?? 0;
         }
     }
