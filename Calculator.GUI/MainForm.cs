@@ -7,6 +7,7 @@ namespace CalculatorGUI
 {
     public partial class MainForm : Form
     {
+        private readonly EvaluationContext _context = new CalculatorEvaluationContext();
         public MainForm()
         {
             InitializeComponent();
@@ -20,7 +21,7 @@ namespace CalculatorGUI
                 var parser = new CalculatorParser(lexer);
                 var expression = parser.Parse();
 
-                var visitor = new EvaluationVisitor();
+                var visitor = new EvaluationVisitor(_context);
                 expression.Accept(visitor);
                 resultTextBox.Text = visitor.Value.ToString();
                 errorTextBox.Text = string.Empty;

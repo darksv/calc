@@ -48,7 +48,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CalculatorEvaluationContext.cs" />
     <Compile Include="CalculatorParser.cs" />
+    <Compile Include="EvaluationContext.cs" />
+    <Compile Include="EvaluationException.cs" />
     <Compile Include="EvaluationVisitor.cs" />
     <Compile Include="Expressions\BinaryExpression.cs" />
     <Compile Include="Expressions\FunctionCallExpression.cs" />

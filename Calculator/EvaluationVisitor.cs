@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using Calculator.Expressions;
 
@@ -11,7 +12,8 @@ namespace Calculator
     public class EvaluationVisitor : IExpressionVisitor
     {
         private readonly Stack<double> _numbers = new Stack<double>();
-
+        private readonly EvaluationContext _context;
+        
         /// <summary>
         ///     Functions that handle prefix unary operations.
         /// </summary>
@@ -36,6 +38,15 @@ namespace Calculator
             };
 
         /// <summary>
+        ///     Initializes class with the given context.
+        /// </summary>
+        /// <param name="context"></param>
+        public EvaluationVisitor(EvaluationContext context)
+        {
+            _context = context;
+        }
+
+        /// <summary>
         ///     Pushes value of the expression onto the stack.
         /// </summary>
         /// <param name="expression">expression to calculate</param>
@@ -50,7 +61,11 @@ namespace Calculator
         /// <param name="expression">expression to calculate</param>
         public void Visit(IdentifierExpression expression)
         {
-            _numbers.Push(2137);
+            var result = _context.TryGetConstant(expression.Name);
+            if (result.HasValue)
+                _numbers.Push(result.Value);
+            else
+                throw new EvaluationException($"Undeclared variable {expression.Name}");
         }
 
         /// <summary>
@@ -108,15 +123,22 @@ namespace Calculator
         /// <param name="expression">expression to evaluate</param>
         public void Visit(FunctionCallExpression expression)
         {
-            var evaluatedArgs = new List<double>();
+            // Evaluate each expression passed as an argument and push calculated values onto the stack
+            foreach (var expr in expression.Arguments)
+                expr.Accept(this);
 
-            foreach (var arg in expression.Arguments.AsEnumerable().Reverse())
-            {
-                arg.Accept(this);
-                evaluatedArgs.Add(_numbers.Pop());
-            }
+            int numArgs = expression.Arguments.Count;
 
-            _numbers.Push(evaluatedArgs.Sum());
+            // Load args from stack
+            var args = new double[numArgs];
+            for (int i = 0; i < numArgs; ++i)
+                args[i] = _numbers.Pop();
+            
+            var result = _context.TryCallFunction(expression.Name, args);
+            if (result.HasValue)
+                _numbers.Push(result.Value);
+            else
+                throw new EvaluationException($"Undeclared function {expression.Name}");
         }
 
         /// <summary>
