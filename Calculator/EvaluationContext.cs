@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 
 namespace Calculator
@@ -37,13 +38,30 @@ namespace Calculator
         }
 
         /// <summary>
-        ///     Creates new function with given name and body.
+        ///     Creates new function with given name and body which accepts any number of arguments.
         /// </summary>
         /// <param name="name">name of the function</param>
-        /// <param name="customFunc">body of the function</param>
-        public void CreateFunction(string name, CustomFunc customFunc)
+        /// <param name="func">body of the function</param>
+        public void CreateFunction(string name, CustomFunc func)
         {
-            _functions.Add(name, customFunc);
+            _functions.Add(name, func);
+        }
+
+        /// <summary>
+        ///     Creates new function with given name and body which accepts only one argument.
+        /// </summary>
+        /// <param name="name">name of the function</param>
+        /// <param name="func">body of the function</param>
+        public void CreateFunction(string name, Func<double, double> func)
+        {
+            CreateFunction(name, args =>
+            {
+                if (args.Length < 1)
+                    throw new EvaluationException($"Too few arguments for function {name}");
+                else if (args.Length > 1)
+                    throw new EvaluationException($"Too many arguments for function {name}");
+                return func(args[0]);
+            });
         }
 
         /// <summary>
