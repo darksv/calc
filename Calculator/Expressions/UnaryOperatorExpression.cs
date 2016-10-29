@@ -3,21 +3,21 @@
     /// <summary>
     ///     Class intended to store expression with one operand.
     /// </summary>
-    public class UnaryExpression : IExpression
+    public class UnaryOperatorExpression : IExpression
     {
         /// <summary>
-        ///     Initializes unary expression.
+        ///     Initializes unary operator expression.
         /// </summary>
         /// <param name="op">operator</param>
         /// <param name="operand">operand</param>
-        public UnaryExpression(TokenKind op, IExpression operand)
+        public UnaryOperatorExpression(TokenKind op, IExpression operand)
         {
             Operator = op;
             Operand = operand;
         }
 
         /// <summary>
-        ///     Operator.
+        ///     Operator to perform on operand.
         /// </summary>
         public TokenKind Operator { get; }
 

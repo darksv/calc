@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 using Calculator.Expressions;
 
 namespace Calculator
@@ -11,7 +9,14 @@ namespace Calculator
     /// </summary>
     public class EvaluationVisitor : IExpressionVisitor
     {
+        /// <summary>
+        ///     Stack with numbers.
+        /// </summary>
         private readonly Stack<double> _numbers = new Stack<double>();
+
+        /// <summary>
+        ///     Evaluation context with functions and constants.
+        /// </summary>
         private readonly EvaluationContext _context;
         
         /// <summary>
@@ -59,6 +64,7 @@ namespace Calculator
         ///     Pushes value being under the identifier onto the stack.
         /// </summary>
         /// <param name="expression">expression to calculate</param>
+        /// <exception cref="EvaluationException">when constant is not declared</exception>
         public void Visit(IdentifierExpression expression)
         {
             var result = _context.TryGetConstant(expression.Name);
@@ -72,7 +78,8 @@ namespace Calculator
         ///     Calculates value of the binary operator expression and pushes it onto the stack.
         /// </summary>
         /// <param name="expression">expression to calculate</param>
-        public void Visit(BinaryExpression expression)
+        /// <exception cref="EvaluationException">when binary operator is not supported</exception>
+        public void Visit(BinaryOperatorExpression expression)
         {
             expression.Left.Accept(this);
             expression.Right.Accept(this);
@@ -90,7 +97,7 @@ namespace Calculator
             }
             else
             {
-                throw new Exception($"Unsupported binary operator {expression.Operator}");
+                throw new EvaluationException($"Unsupported binary operator {expression.Operator}");
             }
         }
 
@@ -98,7 +105,8 @@ namespace Calculator
         ///     Calculates result of the unary operator expression and pushes it onto the stack.
         /// </summary>
         /// <param name="expression">expression to calculate</param>
-        public void Visit(UnaryExpression expression)
+        /// <exception cref="EvaluationException">when prefix unary operator is not supported</exception>
+        public void Visit(UnaryOperatorExpression expression)
         {
             expression.Operand.Accept(this);
 
@@ -113,7 +121,7 @@ namespace Calculator
             }
             else
             {
-                throw new Exception($"Unsupported prefix unary operator {expression.Operator}");
+                throw new EvaluationException($"Unsupported prefix unary operator {expression.Operator}");
             }
         }
 
@@ -121,6 +129,7 @@ namespace Calculator
         ///     Evaluates result of the function call and pushes result onto the stack.
         /// </summary>
         /// <param name="expression">expression to evaluate</param>
+        /// <exception cref="EvaluationException">when function is undeclared</exception>
         public void Visit(FunctionCallExpression expression)
         {
             // Evaluate each expression passed as an argument and push calculated values onto the stack

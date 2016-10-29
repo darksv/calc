@@ -1,14 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Calculator
 {
+    /// <summary>
+    ///     Class which is the context for expression evaluator.
+    /// </summary>
     public class CalculatorEvaluationContext : EvaluationContext
     {
+        /// <summary>
+        ///     Initializes context with mathematical functions and constants.
+        /// </summary>
         public CalculatorEvaluationContext()
         {
             CreateFunction("sin", Math.Sin);

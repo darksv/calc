@@ -10,7 +10,7 @@ namespace Calculator.Parselets
         /// <summary>
         ///     Precedence of the 'operator'.
         /// </summary>
-        public int Precedence => 30;
+        public int Precedence => Precedences.ImplicitMultiplication;
 
         /// <summary>
         ///     Parses an implicit multiplication expression
@@ -21,7 +21,7 @@ namespace Calculator.Parselets
         /// <returns>parsed expression</returns>
         public IExpression Parse(Parser parser, IExpression leftExpression, Token token)
         {
-            return new BinaryExpression(TokenKind.Asterisk, leftExpression, new IdentifierExpression(token.TextValue));
+            return new BinaryOperatorExpression(TokenKind.Asterisk, leftExpression, new IdentifierExpression(token.TextValue));
         }
     }
 }

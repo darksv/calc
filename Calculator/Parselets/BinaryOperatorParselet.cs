@@ -51,7 +51,7 @@ namespace Calculator.Parselets
             // We need to lower the precedence to properly handle the operator's right-associativity.
             // By default it would be left-associative.
             var rightExpression = parser.Parse(Precedence - (Associavity == Association.Right ? 1 : 0));
-            return new BinaryExpression(token.Kind, leftExpression, rightExpression);
+            return new BinaryOperatorExpression(token.Kind, leftExpression, rightExpression);
         }
 
         /// <summary>

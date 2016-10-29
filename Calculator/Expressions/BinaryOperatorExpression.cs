@@ -3,15 +3,15 @@
     /// <summary>
     ///     Class intended to store expression with two operands.
     /// </summary>
-    public class BinaryExpression : IExpression
+    public class BinaryOperatorExpression : IExpression
     {
         /// <summary>
-        ///     Initializes a binary expression.
+        ///     Initializes a binary operator expression.
         /// </summary>
         /// <param name="op">operator</param>
         /// <param name="left">left operand</param>
         /// <param name="right">right operand</param>
-        public BinaryExpression(TokenKind op, IExpression left, IExpression right)
+        public BinaryOperatorExpression(TokenKind op, IExpression left, IExpression right)
         {
             Operator = op;
             Left = left;
@@ -19,17 +19,17 @@
         }
 
         /// <summary>
-        ///     Left-hand operand.
+        ///     Left-hand side operand.
         /// </summary>
         public IExpression Left { get; }
 
         /// <summary>
-        ///     Operator.
+        ///     Operator to perform on operands.
         /// </summary>
         public TokenKind Operator { get; }
 
         /// <summary>
-        ///     Right-hand operand.
+        ///     Right-hand side operand.
         /// </summary>
         public IExpression Right { get; }
 

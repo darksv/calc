@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 
 namespace Calculator
 {
     /// <summary>
-    ///     Class responsible for storing environmental data like constants and functions, necessary to evaluate expression.
+    ///     Class responsible for storing context data like constants and functions, necessary to evaluate expression.
     /// </summary>
     public class EvaluationContext
     {
@@ -69,6 +67,7 @@ namespace Calculator
         /// </summary>
         /// <param name="name">name of the function</param>
         /// <param name="args">arguments to pass to the function</param>
+        /// <exception cref="EvaluationException">when arguments are invalid</exception>
         /// <returns>value returned by function or null if function is not defined</returns>
         public double? TryCallFunction(string name, params double[] args)
         {

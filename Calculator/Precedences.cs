@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Calculator
+﻿namespace Calculator
 {
-    internal static class Precedence
+    internal static class Precedences
     {
         public const int Addition = 1;
         public const int Substraction = 1;
@@ -14,5 +8,7 @@ namespace Calculator
         public const int Division = 2;
         public const int Exponentiation = 3;
         public const int Unary = 10;
+        public const int ImplicitMultiplication = 20;
+        public const int FunctionCall = 30;
     }
 }

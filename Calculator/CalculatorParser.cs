@@ -19,11 +19,11 @@ namespace Calculator
             Register(TokenKind.Plus, new PrefixOperatorParselet());
             Register(TokenKind.Minus, new PrefixOperatorParselet());
             Register(TokenKind.LeftParen, new GroupParselet());
-            Register(TokenKind.Plus, new BinaryOperatorParselet(Precedence.Addition, Association.Left));
-            Register(TokenKind.Minus, new BinaryOperatorParselet(Precedence.Substraction, Association.Left));
-            Register(TokenKind.Asterisk, new BinaryOperatorParselet(Precedence.Multiplication, Association.Left));
-            Register(TokenKind.Slash, new BinaryOperatorParselet(Precedence.Division, Association.Left));
-            Register(TokenKind.Caret, new BinaryOperatorParselet(Precedence.Exponentiation, Association.Right));
+            Register(TokenKind.Plus, new BinaryOperatorParselet(Precedences.Addition, Association.Left));
+            Register(TokenKind.Minus, new BinaryOperatorParselet(Precedences.Substraction, Association.Left));
+            Register(TokenKind.Asterisk, new BinaryOperatorParselet(Precedences.Multiplication, Association.Left));
+            Register(TokenKind.Slash, new BinaryOperatorParselet(Precedences.Division, Association.Left));
+            Register(TokenKind.Caret, new BinaryOperatorParselet(Precedences.Exponentiation, Association.Right));
             Register(TokenKind.LeftParen, new FunctionCallParselet());
             Register(TokenKind.Identifier, new ImplicitMultiplicationParselet());
         }

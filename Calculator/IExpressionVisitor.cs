@@ -11,13 +11,13 @@ namespace Calculator
         ///     Visits an unary expression.
         /// </summary>
         /// <param name="expression">expression to visit</param>
-        void Visit(UnaryExpression expression);
+        void Visit(UnaryOperatorExpression expression);
 
         /// <summary>
         ///     Visits a binary expression.
         /// </summary>
         /// <param name="expression">expression to visit</param>
-        void Visit(BinaryExpression expression);
+        void Visit(BinaryOperatorExpression expression);
 
         /// <summary>
         ///     Visits a number expression.

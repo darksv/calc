@@ -10,7 +10,14 @@ namespace Calculator
     /// </summary>
     public class Lexer : IEnumerable<Token>
     {
+        /// <summary>
+        ///     Source code to tokenize.
+        /// </summary>
         private readonly string _source;
+
+        /// <summary>
+        ///     Position in the source.
+        /// </summary>
         private int _position;
 
         /// <summary>
@@ -129,6 +136,7 @@ namespace Calculator
         ///     Consumes other non-literal token.
         /// </summary>
         /// <returns>operator</returns>
+        /// <exception cref="LexerException">when got invalid symbol</exception>
         private TokenKind ConsumeOther()
         {
             switch (Current)
@@ -150,7 +158,7 @@ namespace Calculator
                 case ')':
                     return Select(TokenKind.RightParen);
                 default:
-                    throw new Exception($"Invalid symbol '{Current}' at position: {_position}");
+                    throw new LexerException($"Invalid symbol '{Current}' at position: {_position}");
             }
         }
 
