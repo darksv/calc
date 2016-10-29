@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Calculator
@@ -10,6 +11,21 @@ namespace Calculator
     /// </summary>
     public class Lexer : IEnumerable<Token>
     {
+        /// <summary>
+        ///     Mapping of symbols to coresponding TokenKind that helps tokenizing operators.
+        /// </summary>
+        private static readonly Dictionary<char, TokenKind> Symbols = new Dictionary<char, TokenKind>()
+        {
+            {',', TokenKind.Comma},
+            {'+', TokenKind.Plus},
+            {'-', TokenKind.Minus},
+            {'*', TokenKind.Asterisk},
+            {'/', TokenKind.Slash},
+            {'^', TokenKind.Caret},
+            {'(', TokenKind.LeftParen},
+            {')', TokenKind.RightParen},
+    };
+
         /// <summary>
         ///     Source code to tokenize.
         /// </summary>
@@ -139,27 +155,11 @@ namespace Calculator
         /// <exception cref="LexerException">when got invalid symbol</exception>
         private TokenKind ConsumeOther()
         {
-            switch (Current)
-            {
-                case ',':
-                    return Select(TokenKind.Comma);
-                case '+':
-                    return Select(TokenKind.Plus);
-                case '-':
-                    return Select(TokenKind.Minus);
-                case '*':
-                    return Select(TokenKind.Asterisk);
-                case '/':
-                    return Select(TokenKind.Slash);
-                case '^':
-                    return Select(TokenKind.Caret);
-                case '(':
-                    return Select(TokenKind.LeftParen);
-                case ')':
-                    return Select(TokenKind.RightParen);
-                default:
-                    throw new LexerException($"Invalid symbol '{Current}' at position: {_position}");
-            }
+            TokenKind kind;
+            if (Symbols.TryGetValue(Current, out kind))
+                return Select(kind);
+            
+            throw new LexerException($"Invalid symbol '{Current}' at position: {_position}");
         }
 
         /// <summary>
