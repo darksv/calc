@@ -14,7 +14,7 @@ namespace Calculator.Parselets
         /// <param name="parser"></param>
         /// <param name="leftExpression">function to call</param>
         /// <param name="token"></param>
-        /// <exception cref="ParseException">when syntax is invalid</exception>
+        /// <exception cref="ParserException">when syntax is invalid</exception>
         /// <returns>parsed expression</returns>
         public IExpression Parse(Parser parser, IExpression leftExpression, Token token)
         {
@@ -34,7 +34,7 @@ namespace Calculator.Parselets
                 if (parser.Match(TokenKind.RightParen))
                 {
                     if (expectArgument)
-                        throw new ParseException("Expected an argument");
+                        throw new ParserException("Expected an argument");
                     else
                         break;
                 }
@@ -46,7 +46,7 @@ namespace Calculator.Parselets
                 expectArgument = parser.Match(TokenKind.Comma);
             }
             
-            return new FunctionCallExpression(callee.Name, args);
+            return new FunctionCallExpression(callee.Name, args.ToArray());
         }
 
         /// <summary>

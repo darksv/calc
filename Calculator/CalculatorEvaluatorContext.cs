@@ -6,12 +6,12 @@ namespace Calculator
     /// <summary>
     ///     Class which is the context for expression evaluator.
     /// </summary>
-    public class CalculatorEvaluationContext : EvaluationContext
+    public class CalculatorEvaluatorContext : EvaluatorContext
     {
         /// <summary>
         ///     Initializes context with mathematical functions and constants.
         /// </summary>
-        public CalculatorEvaluationContext()
+        public CalculatorEvaluatorContext()
         {
             CreateFunction("sin", Math.Sin);
             CreateFunction("cos", Math.Cos);

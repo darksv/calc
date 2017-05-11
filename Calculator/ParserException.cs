@@ -5,12 +5,12 @@ namespace Calculator
     /// <summary>
     ///     Exception thrown by parser.
     /// </summary>
-    public class ParseException : Exception
+    public class ParserException : Exception
     {
         /// <summary>
         ///     Initializes an parser exception.
         /// </summary>
-        public ParseException()
+        public ParserException()
         {
         }
 
@@ -18,7 +18,7 @@ namespace Calculator
         ///     Initializes an parser exception with specified message.
         /// </summary>
         /// <param name="message">message of the exception</param>
-        public ParseException(string message) : base(message)
+        public ParserException(string message) : base(message)
         {
         }
 
@@ -27,7 +27,7 @@ namespace Calculator
         /// </summary>
         /// <param name="message">message of the exception</param>
         /// <param name="inner">exception which caused this one</param>
-        public ParseException(string message, Exception inner) : base(message, inner)
+        public ParserException(string message, Exception inner) : base(message, inner)
         {
         }
     }

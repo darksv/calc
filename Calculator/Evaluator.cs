@@ -7,7 +7,7 @@ namespace Calculator
     /// <summary>
     ///     Class intended to evaluate an expression and return the result.
     /// </summary>
-    public class EvaluationVisitor : IExpressionVisitor
+    public class Evaluator : IExpressionVisitor
     {
         /// <summary>
         ///     Stack with numbers.
@@ -17,7 +17,7 @@ namespace Calculator
         /// <summary>
         ///     Evaluation context with functions and constants.
         /// </summary>
-        private readonly EvaluationContext _context;
+        private readonly EvaluatorContext _context;
         
         /// <summary>
         ///     Functions that handle prefix unary operations.
@@ -46,7 +46,7 @@ namespace Calculator
         ///     Initializes class with the given context.
         /// </summary>
         /// <param name="context"></param>
-        public EvaluationVisitor(EvaluationContext context)
+        public Evaluator(EvaluatorContext context)
         {
             _context = context;
         }
@@ -64,21 +64,18 @@ namespace Calculator
         ///     Pushes value being under the identifier onto the stack.
         /// </summary>
         /// <param name="expression">expression to calculate</param>
-        /// <exception cref="EvaluationException">when constant is not declared</exception>
+        /// <exception cref="EvaluatorException">when constant is not declared</exception>
         public void Visit(IdentifierExpression expression)
         {
-            var result = _context.TryGetConstant(expression.Name);
-            if (result.HasValue)
-                _numbers.Push(result.Value);
-            else
-                throw new EvaluationException($"Undeclared variable {expression.Name}");
+            var value = _context.GetConstant(expression.Name);
+            _numbers.Push(value);
         }
 
         /// <summary>
         ///     Calculates value of the binary operator expression and pushes it onto the stack.
         /// </summary>
         /// <param name="expression">expression to calculate</param>
-        /// <exception cref="EvaluationException">when binary operator is not supported</exception>
+        /// <exception cref="EvaluatorException">when binary operator is not supported</exception>
         public void Visit(BinaryOperatorExpression expression)
         {
             expression.Left.Accept(this);
@@ -91,13 +88,13 @@ namespace Calculator
                 var b = _numbers.Pop();
                 var a = _numbers.Pop();
 
-                var result = func(a, b);
+                var result = func.Invoke(a, b);
 
                 _numbers.Push(result);
             }
             else
             {
-                throw new EvaluationException($"Unsupported binary operator {expression.Operator}");
+                throw new EvaluatorException($"Unsupported binary operator {expression.Operator}");
             }
         }
 
@@ -105,7 +102,7 @@ namespace Calculator
         ///     Calculates result of the unary operator expression and pushes it onto the stack.
         /// </summary>
         /// <param name="expression">expression to calculate</param>
-        /// <exception cref="EvaluationException">when prefix unary operator is not supported</exception>
+        /// <exception cref="EvaluatorException">when prefix unary operator is not supported</exception>
         public void Visit(UnaryOperatorExpression expression)
         {
             expression.Operand.Accept(this);
@@ -115,13 +112,13 @@ namespace Calculator
             {
                 var arg = _numbers.Pop();
 
-                var result = func(arg);
+                var result = func.Invoke(arg);
 
                 _numbers.Push(result);
             }
             else
             {
-                throw new EvaluationException($"Unsupported prefix unary operator {expression.Operator}");
+                throw new EvaluatorException($"Unsupported prefix unary operator {expression.Operator}");
             }
         }
 
@@ -129,25 +126,33 @@ namespace Calculator
         ///     Evaluates result of the function call and pushes result onto the stack.
         /// </summary>
         /// <param name="expression">expression to evaluate</param>
-        /// <exception cref="EvaluationException">when function is undeclared</exception>
+        /// <exception cref="EvaluatorException">when function is undeclared</exception>
         public void Visit(FunctionCallExpression expression)
         {
             // Evaluate each expression passed as an argument and push calculated values onto the stack
             foreach (var expr in expression.Arguments)
                 expr.Accept(this);
 
-            int numArgs = expression.Arguments.Count;
+            int numArgs = expression.Arguments.Length;
 
             // Load args from stack
             var args = new double[numArgs];
             for (int i = 0; i < numArgs; ++i)
                 args[i] = _numbers.Pop();
             
-            var result = _context.TryCallFunction(expression.Name, args);
-            if (result.HasValue)
-                _numbers.Push(result.Value);
-            else
-                throw new EvaluationException($"Undeclared function {expression.Name}");
+            var result = _context.CallFunction(expression.Name, args);
+            _numbers.Push(result);
+        }
+
+        /// <summary>
+        ///     Evaluates expression and returns calculated value.
+        /// </summary>
+        /// <param name="expression">expression to evalute</param>
+        /// <returns>calculated value</returns>
+        public double Evaluate(IExpression expression)
+        {
+            expression.Accept(this);
+            return Value;
         }
 
         /// <summary>

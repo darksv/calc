@@ -6,7 +6,7 @@ namespace Calculator
     /// <summary>
     ///     Class responsible for storing context data like constants and functions, necessary to evaluate expression.
     /// </summary>
-    public class EvaluationContext
+    public class EvaluatorContext
     {
         /// <summary>
         ///     Delegate intended to be an function called during evaluation.
@@ -54,10 +54,8 @@ namespace Calculator
         {
             CreateFunction(name, args =>
             {
-                if (args.Length < 1)
-                    throw new EvaluationException($"Too few arguments for function {name}");
-                else if (args.Length > 1)
-                    throw new EvaluationException($"Too many arguments for function {name}");
+                if (args.Length != 1)
+                    throw new EvaluatorException($"Function '{name}' takes 1 argument, got {args.Length}");
                 return func(args[0]);
             });
         }
@@ -67,12 +65,15 @@ namespace Calculator
         /// </summary>
         /// <param name="name">name of the function</param>
         /// <param name="args">arguments to pass to the function</param>
-        /// <exception cref="EvaluationException">when arguments are invalid</exception>
+        /// <exception cref="EvaluatorException">when arguments are invalid</exception>
         /// <returns>value returned by function or null if function is not defined</returns>
-        public double? TryCallFunction(string name, params double[] args)
+        public double CallFunction(string name, params double[] args)
         {
             CustomFunc customFunc;
-            return _functions.TryGetValue(name, out customFunc) ? (double?)customFunc(args) : null;
+            if (_functions.TryGetValue(name, out customFunc))
+                return customFunc(args);
+            
+            throw new EvaluatorException($"Undeclared function '{name}'");
         }
 
         /// <summary>
@@ -80,10 +81,23 @@ namespace Calculator
         /// </summary>
         /// <param name="name"></param>
         /// <returns>value stored in constant or null if such constant is not defined</returns>
-        public double? TryGetConstant(string name)
+        public double GetConstant(string name)
         {
             double value;
-            return _constants.TryGetValue(name, out value) ? (double?)value : null;
+            if (_constants.TryGetValue(name, out value))
+                return value;
+            
+            throw new EvaluatorException($"Undefined constant '{name}'");
+        }
+
+        /// <summary>
+        ///     Checks whether constant with given name exists.
+        /// </summary>
+        /// <param name="name">name of the constant</param>
+        /// <returns>true when such constant exists</returns>
+        public bool HasConstant(string name)
+        {
+            return _constants.ContainsKey(name);
         }
     }
 }

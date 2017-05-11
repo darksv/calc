@@ -59,7 +59,7 @@ namespace CalculatorTests
         };
         
         [TestMethod]
-        public void TestSingleValidToken()
+        public void Tokenize_SingleToken_Tokenized()
         {
             foreach (var item in SingleTokenTests)
             {
@@ -76,7 +76,7 @@ namespace CalculatorTests
         }
         
         [TestMethod]
-        public void TestMultipleValidTokens()
+        public void Tokenize_MultipleTokens_Tokenized()
         {
             foreach (var item in MultipleTokensTests)
             {

@@ -12,7 +12,7 @@ namespace Calculator.Expressions
         /// </summary>
         /// <param name="name">function to call</param>
         /// <param name="args">arguments for the function</param>
-        public FunctionCallExpression(string name, List<IExpression> args)
+        public FunctionCallExpression(string name, IExpression[] args)
         {
             Name = name;
             Arguments = args;
@@ -26,7 +26,7 @@ namespace Calculator.Expressions
         /// <summary>
         ///     Arguments passed to the function.
         /// </summary>
-        public List<IExpression> Arguments { get; }
+        public IExpression[] Arguments { get; }
 
         /// <summary>
         ///     Accepts an expression visitor.

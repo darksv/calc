@@ -84,7 +84,7 @@ namespace Calculator
 
             var prefix = GetPrefixParseletIfExists(token.Kind);
             if (prefix == null)
-                throw new ParseException($"Unexpected token {token}");
+                throw new ParserException($"Unexpected token {token}");
 
             var left = prefix.Parse(this, token);
 
@@ -96,7 +96,7 @@ namespace Calculator
 
                 var parselet = GetInfixParseletIfExists(token.Kind);
                 if (parselet == null)
-                    throw new ParseException("watwat");
+                    throw new ParserException("watwat");
 
                 left = parselet.Parse(this, left, token);
             }
@@ -127,9 +127,9 @@ namespace Calculator
                 return Consume();
             
             if (expected == TokenKind.EndOfSource)
-                throw new ParseException($"Unexpected token {token}");
+                throw new ParserException($"Unexpected token {token.Kind}");
             else
-                throw new ParseException($"Expected {expected}, got {token}");
+                throw new ParserException($"Expected {expected}, got {token.Kind}");
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace Calculator
             var token = Peek(0);
             if (token.Kind != expected)
             {
-                consumedToken = null;
+                consumedToken = default(Token);
                 return false;
             }
 
