@@ -23,10 +23,10 @@ namespace Calculator
         ///     Functions that handle prefix unary operations.
         /// </summary>
         private static readonly Dictionary<TokenKind, Func<double, double>> PrefixOperators =
-            new Dictionary<TokenKind, Func<double, double>>()
+            new Dictionary<TokenKind, Func<double, double>>
             {
-                {TokenKind.Plus, (o) => +o},
-                {TokenKind.Minus, (o) => -o},
+                {TokenKind.Plus, o => +o},
+                {TokenKind.Minus, o => -o},
             };
 
         /// <summary>
@@ -81,8 +81,7 @@ namespace Calculator
             expression.Left.Accept(this);
             expression.Right.Accept(this);
 
-            Func<double, double, double> func;
-            if (BinaryOperators.TryGetValue(expression.Operator, out func))
+            if (BinaryOperators.TryGetValue(expression.Operator, out Func<double, double, double> func))
             {
                 // Arguments should be popped in reversed order
                 var b = _numbers.Pop();
@@ -107,8 +106,7 @@ namespace Calculator
         {
             expression.Operand.Accept(this);
 
-            Func<double, double> func;
-            if (PrefixOperators.TryGetValue(expression.Operator, out func))
+            if (PrefixOperators.TryGetValue(expression.Operator, out Func<double, double> func))
             {
                 var arg = _numbers.Pop();
 

@@ -47,27 +47,25 @@ namespace Calculator
         }
 
         /// <summary>
-        ///     Returns prefix parselet for specified token kind.
+        ///     Tries to retrieve prefix parselet for specified token kind.
         /// </summary>
         /// <param name="kind"></param>
-        /// <returns>parselet or null if parselet does not exist</returns>
-        private IPrefixParselet GetPrefixParseletIfExists(TokenKind kind)
+        /// <param name="parselet"></param>
+        /// <returns>true if parselet exists, else false</returns>
+        private bool TryGetPrefixParselet(TokenKind kind, out IPrefixParselet parselet)
         {
-            IPrefixParselet parselet;
-            _prefixParselets.TryGetValue(kind, out parselet);
-            return parselet;
+            return _prefixParselets.TryGetValue(kind, out parselet);
         }
 
         /// <summary>
-        ///     Return infix parselet for specified token kind.
+        ///     Tries to retrieve infix parselet for specified token kind.
         /// </summary>
         /// <param name="kind"></param>
-        /// <returns>parselet or null if parselet does not exist</returns>
-        private IInfixParselet GetInfixParseletIfExists(TokenKind kind)
+        /// <param name="parselet"></param>
+        /// <returns>true if parselet exists, else false</returns>
+        private bool TryGetInfixParselet(TokenKind kind, out IInfixParselet parselet)
         {
-            IInfixParselet parselet;
-            _infixParselets.TryGetValue(kind, out parselet);
-            return parselet;
+            return _infixParselets.TryGetValue(kind, out parselet);
         }
 
         /// <summary>
@@ -78,12 +76,12 @@ namespace Calculator
         public IExpression Parse(int precedence)
         {
             var token = Consume();
-
-            var prefix = GetPrefixParseletIfExists(token.Kind);
-            if (prefix == null)
+            
+            IExpression left;
+            if (TryGetPrefixParselet(token.Kind, out IPrefixParselet prefixParselet))
+                left = prefixParselet.Parse(this, token);
+            else
                 throw new ParserException($"Unexpected token {token}");
-
-            var left = prefix.Parse(this, token);
 
             // We are parsing other expressions with lower precedence
             // leaving our to be processed later
@@ -91,11 +89,10 @@ namespace Calculator
             {
                 token = Consume();
 
-                var parselet = GetInfixParseletIfExists(token.Kind);
-                if (parselet == null)
-                    throw new ParserException("watwat");
-
-                left = parselet.Parse(this, left, token);
+                if (TryGetInfixParselet(token.Kind, out IInfixParselet infixParselet))
+                    left = infixParselet.Parse(this, left, token);
+                else
+                    throw new ParserException("unknown parser error");
             }
 
             return left;
@@ -149,8 +146,7 @@ namespace Calculator
         /// <returns>true if tokens match, otherwise, false</returns>
         public bool Match(TokenKind expected)
         {
-            Token t;
-            return Match(expected, out t);
+            return Match(expected, out Token token);
         }
 
         /// <summary>
@@ -198,7 +194,9 @@ namespace Calculator
         private int GetPrecedence()
         {
             var token = Peek(0);
-            return GetInfixParseletIfExists(token.Kind)?.Precedence ?? 0;
+            return TryGetInfixParselet(token.Kind, out IInfixParselet infixParselet) 
+                ? infixParselet.Precedence
+                : 0;
         }
     }
 }
