@@ -155,10 +155,9 @@ namespace Calculator
         /// <exception cref="LexerException">when got invalid symbol</exception>
         private TokenKind ConsumeOther()
         {
-            TokenKind kind;
-            if (Symbols.TryGetValue(Current, out kind))
+            if (Symbols.TryGetValue(Current, out TokenKind kind))
                 return Select(kind);
-            
+
             throw new LexerException($"Invalid symbol '{Current}' at position: {_position}");
         }
 
