@@ -83,7 +83,7 @@ namespace CalculatorTests
                 IEnumerable<Token> lexer = new Lexer(item.Key);
                 using (var enumerator = lexer.GetEnumerator())
                 {
-                    foreach (var expected in item.Value as IEnumerable<Token>)
+                    foreach (var expected in item.Value)
                     {
                         Assert.IsTrue(enumerator.MoveNext());
                         Assert.AreEqual(expected, enumerator.Current);
