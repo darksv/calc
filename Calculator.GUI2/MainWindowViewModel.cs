@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 using CGraph;
 using PropertyChanged;
@@ -22,7 +23,6 @@ namespace Calculator.GUI2
         {
             public string Identifier { get; set; }
             public double Value { get; set; }
-            public override string ToString() => $"{Identifier} = {Value}";
         }
 
         private void OnExpressionChanged()
@@ -51,14 +51,18 @@ namespace Calculator.GUI2
             }
         }
 
-        public ICommand AddConstantCommand => new RelayCommand(() =>
+        public ICommand SetConstantCommand => new RelayCommand(() =>
         {
-            if (double.TryParse(ConstantValue, out double x))
-            {
-                Constants.Add(new Constant{Identifier = ConstantName, Value = x});
-                ConstantName = string.Empty;
-                ConstantValue = string.Empty;
-            }
+            if (!double.TryParse(ConstantValue, out double x))
+                return;
+
+            var existingConstant = Constants.FirstOrDefault(constant => constant.Identifier == ConstantName);
+            if (existingConstant == null)
+                Constants.Add(new Constant {Identifier = ConstantName, Value = x});
+            else
+                existingConstant.Value = x;
+
+            OnExpressionChanged();
         });
     }
 }
