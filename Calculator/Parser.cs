@@ -17,15 +17,12 @@ namespace Calculator
 
         private readonly List<Token> _queuedTokens = new List<Token>();
 
-        private IEnumerable<Token> _tokens;
-
         /// <summary>
         ///     Initializes a parser for collection of tokens.
         /// </summary>
         /// <param name="tokens">tokens to parse</param>
         public Parser(IEnumerable<Token> tokens)
         {
-            _tokens = tokens;
             _enumerator = tokens.GetEnumerator();
         }
 
