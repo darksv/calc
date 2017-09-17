@@ -3,22 +3,6 @@
 namespace Calculator.Parselets
 {
     /// <summary>
-    ///     Enum intended to represent associavity of a binary operator.
-    /// </summary>
-    public enum Association
-    {
-        /// <summary>
-        ///     Left-associative operator.
-        /// </summary>
-        Left,
-
-        /// <summary>
-        ///     Right-associative operator.
-        /// </summary>
-        Right
-    }
-
-    /// <summary>
     ///     Class intended to be a binary operator expression parselet.
     /// </summary>
     public class BinaryOperatorParselet : IInfixParselet
@@ -27,17 +11,17 @@ namespace Calculator.Parselets
         ///     Initializes parselet with operator's precedence and associavity.
         /// </summary>
         /// <param name="precedence">precedence of the operator</param>
-        /// <param name="associavity">associavity of the operator</param>
-        public BinaryOperatorParselet(int precedence, Association associavity)
+        /// <param name="associativity">associavity of the operator</param>
+        public BinaryOperatorParselet(int precedence, Associativity associativity)
         {
             Precedence = precedence;
-            Associavity = associavity;
+            Associativity = associativity;
         }
 
         /// <summary>
         ///     Operator's associavity.
         /// </summary>
-        public Association Associavity { get; }
+        public Associativity Associativity { get; }
 
         /// <summary>
         ///     Parses a binary operator expression.
@@ -50,7 +34,7 @@ namespace Calculator.Parselets
         {
             // We need to lower the precedence to properly handle the operator's right-associativity.
             // By default it would be left-associative.
-            var rightExpression = parser.Parse(Precedence - (Associavity == Association.Right ? 1 : 0));
+            var rightExpression = parser.Parse(Precedence - (Associativity == Associativity.Right ? 1 : 0));
             return new BinaryOperatorExpression(token.Kind, leftExpression, rightExpression);
         }
 

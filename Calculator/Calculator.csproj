@@ -57,6 +57,7 @@
     <Compile Include="Expressions\IdentifierExpression.cs" />
     <Compile Include="Expressions\UnaryOperatorExpression.cs" />
     <Compile Include="IExpressionVisitor.cs" />
+    <Compile Include="Parselets\Associativity.cs" />
     <Compile Include="ParserException.cs" />
     <Compile Include="Parselets\BinaryOperatorParselet.cs" />
     <Compile Include="Expressions\NumberExpression.cs" />
