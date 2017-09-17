@@ -3,24 +3,6 @@
 namespace Calculator
 {
     /// <summary>
-    ///     Enum for token kinds.
-    /// </summary>
-    public enum TokenKind
-    {
-        EndOfSource,
-        Number,
-        Identifier,
-        Comma,
-        Plus,
-        Minus,
-        Asterisk,
-        Slash,
-        Caret,
-        LeftParen,
-        RightParen,
-    }
-    
-    /// <summary>
     ///     Class intended to be an basic lexical unit for the parser.
     /// </summary>
     public class Token
@@ -76,15 +58,20 @@ namespace Calculator
         /// <returns>true if objects are equal, otherwise, false</returns>
         public override bool Equals(object obj)
         {
-            var other = obj as Token;
-            if (other == null || other.Kind != Kind)
-                return false;
-            else if (Kind == TokenKind.Number)
-                return other.NumberValue.Equals(NumberValue);
-            else if (Kind == TokenKind.Identifier)
-                return other.TextValue.Equals(TextValue);
-            else
-                return true;
+            if (obj is Token otherToken && otherToken.Kind == Kind)
+            {
+                switch (Kind)
+                {
+                    case TokenKind.Number:
+                        return otherToken.NumberValue.Equals(NumberValue);
+                    case TokenKind.Identifier:
+                        return otherToken.TextValue.Equals(TextValue);
+                    default:
+                        return true;
+                }
+            }
+            
+            return false;
         }
 
         /// <summary>

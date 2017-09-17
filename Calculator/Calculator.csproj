@@ -75,6 +75,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Lexer.cs" />
     <Compile Include="Token.cs" />
+    <Compile Include="TokenKind.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
